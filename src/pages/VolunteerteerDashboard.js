@@ -18,6 +18,7 @@ import {
   Avatar,
   UserInfo,
   Card,
+  CardHeader,
   Button,
 } from "../styles/DashboardStyles";
 
@@ -84,35 +85,38 @@ const VolunteerDashboard = () => {
 
       case "students":
         return (
-          <Card>
-            <h2>Manual Entry</h2>
+          <>
+            <Header>
+              <PageTitle>Manual Entry</PageTitle>
+            </Header>
+            <Card>
+              <div style={{ marginTop: "1.5rem" }}>
+                <h3>Student Sign Up</h3>
+                <form>
+                  <input placeholder="Student Name" />
+                  <br />
+                  <br />
+                  <input placeholder="Student Email" />
+                  <br />
+                  <br />
+                  <Button type="submit">Submit</Button>
+                </form>
+              </div>
 
-            <div style={{ marginTop: "1.5rem" }}>
-              <h3>Student Sign Up</h3>
-              <form>
-                <input placeholder="Student Name" />
-                <br />
-                <br />
-                <input placeholder="Student Email" />
-                <br />
-                <br />
-                <Button type="submit">Submit</Button>
-              </form>
-            </div>
-
-            <div style={{ marginTop: "2rem" }}>
-              <h3>Institution Sign Up</h3>
-              <form>
-                <input placeholder="Institution Name" />
-                <br />
-                <br />
-                <input placeholder="Contact Email" />
-                <br />
-                <br />
-                <Button type="submit">Submit</Button>
-              </form>
-            </div>
-          </Card>
+              <div style={{ marginTop: "2rem" }}>
+                <h3>Institution Sign Up</h3>
+                <form>
+                  <input placeholder="Institution Name" />
+                  <br />
+                  <br />
+                  <input placeholder="Contact Email" />
+                  <br />
+                  <br />
+                  <Button type="submit">Submit</Button>
+                </form>
+              </div>
+            </Card>
+          </>
         );
 
       case "syllabus":
@@ -133,6 +137,105 @@ const VolunteerDashboard = () => {
             </p>
           </Card>
         );
+      case "profile":
+        const realUserData = {
+          name: user.name || "User",
+          email: user.email || "user@example.com",
+          phone: user.phone || "Not available",
+          studentId: user.studentId || "AH2023001",
+          joined: user.joinedDate || "January 15, 2023",
+          course: user.course || "Animation Design", // or "Not available"
+        };
+
+        const getInitials = () => {
+          if (!realUserData.name) return "U";
+          return realUserData.name
+            .split(" ")
+            .map((n) => n.charAt(0).toUpperCase())
+            .join("");
+        };
+
+        const getFullName = () => realUserData.name;
+
+        return (
+          <>
+            <Header>
+              <PageTitle>My Profile</PageTitle>
+            </Header>
+
+            <Card>
+              <div style={{ padding: "1rem 1.5rem" }}>
+                <h2 style={{ marginBottom: "1.5rem" }}>Personal Information</h2>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "2rem",
+                  }}
+                >
+                  <Avatar
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      fontSize: "2rem",
+                      marginRight: "1.5rem",
+                    }}
+                  >
+                    {getInitials()}
+                  </Avatar>
+                  <div>
+                    <h3 style={{ marginBottom: "0.5rem" }}>{getFullName()}</h3>
+                    <p style={{ color: "var(--gray-medium)" }}>
+                      {userType || "Volunteer"}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "1.5rem",
+                  }}
+                >
+                  <div>
+                    <p style={{ fontWeight: "600" }}>Email</p>
+                    <p>{realUserData.email}</p>
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: "600" }}>Phone</p>
+                    <p>{realUserData.phone}</p>
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: "600" }}>Student ID</p>
+                    <p>{realUserData.studentId}</p>
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: "600" }}>Joined</p>
+                    <p>{realUserData.joined}</p>
+                  </div>
+                  <div>
+                    <p style={{ fontWeight: "600" }}>Course</p>
+                    <p>{realUserData.course}</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <h2>Account Settings</h2>
+              </CardHeader>
+              <div style={{ padding: "1rem" }}>
+                <Button>Change Password</Button>
+                <Button style={{ marginLeft: "1rem" }}>
+                  Notification Settings
+                </Button>
+              </div>
+            </Card>
+          </>
+        );
 
       default:
         return <div>Page not found</div>;
@@ -152,7 +255,9 @@ const VolunteerDashboard = () => {
       <Sidebar>
         <Logo>
           <img src={logo} alt="Logo" style={{ maxWidth: "180px" }} />
-          <p style={{ color: "white", fontWeight: 600 }}>Volunteer Portal</p>
+          <p style={{ color: "white", fontWeight: 600, marginLeft: "25px" }}>
+            Volunteer Portal
+          </p>
         </Logo>
         <NavMenu>
           <NavItem>
@@ -160,7 +265,8 @@ const VolunteerDashboard = () => {
               active={activeTab === "dashboard"}
               onClick={() => setActiveTab("dashboard")}
             >
-              <i className="fas fa-home"></i> Dashboard
+              <i className="fas fa-home "></i>{" "}
+              <span style={{ marginLeft: "10px" }}>Dashboard</span>
             </NavLink>
           </NavItem>
           <NavItem>
@@ -168,20 +274,25 @@ const VolunteerDashboard = () => {
               active={activeTab === "students"}
               onClick={() => setActiveTab("students")}
             >
-              <i className="fas fa-users"></i> Manual Entry
+              <i className="fas fa-users"></i>
+              <span style={{ marginLeft: "10px" }}>Manual Entry</span>
             </NavLink>
           </NavItem>
+
           <NavItem>
             <NavLink
-              active={activeTab === "syllabus"}
-              onClick={() => setActiveTab("syllabus")}
+              href="#"
+              active={activeTab === "profile"}
+              onClick={() => setActiveTab("profile")}
             >
-              <i className="fas fa-user"></i> Profile
+              <i className="fas fa-user" style={{ marginRight: "10px" }}></i>
+              Profile
             </NavLink>
           </NavItem>
           <NavItem style={{ marginTop: "2rem" }}>
             <NavLink href="/login">
-              <i className="fas fa-sign-out-alt"></i> Logout
+              <i className="fas fa-sign-out-alt"></i>
+              <span style={{ marginLeft: "20px" }}>Logout</span>
             </NavLink>
           </NavItem>
         </NavMenu>
